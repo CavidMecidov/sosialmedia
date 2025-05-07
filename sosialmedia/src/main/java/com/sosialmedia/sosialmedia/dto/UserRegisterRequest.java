@@ -10,13 +10,11 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class UserRegisterRequest {
-@NotBlank(message = "Name can not be blank")
+    @NotBlank(message = "Name can not be blank")
     private String name;
-@NotBlank(message = "Surname can not be blank")
+    @NotBlank(message = "Surname can not be blank")
     private String surname;
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -30,7 +28,7 @@ public class UserRegisterRequest {
     private String phoneNumber;
     @NotBlank(message = "Username can not be blank")
     private String username;
-    @Size(min = 8,message = "Password must be at least 8 characters long")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     @NotBlank(message = "Password can not be blank")
     private String password;
     private String profilePictureUrl;

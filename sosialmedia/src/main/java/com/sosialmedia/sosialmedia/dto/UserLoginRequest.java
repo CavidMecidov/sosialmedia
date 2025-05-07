@@ -1,12 +1,14 @@
 package com.sosialmedia.sosialmedia.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class UserLoginRequest {
     @NotBlank(message = "Username can not be blank")
-private String username;
+    private String username;
     @NotBlank(message = "Password can not be blank")
-private String password;
+    @Size(min = 8)
+    private String password;
 }
