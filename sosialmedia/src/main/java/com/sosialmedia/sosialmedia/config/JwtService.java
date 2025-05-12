@@ -25,12 +25,12 @@ public class JwtService {
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
-                .setClaims(Map.of("roles", user.getRole()))
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .setClaims(Map.of("roles",user.getRole())) //Rol elave etmek
+                .setSubject(user.getUsername())//Token sahibi
+                .setIssuedAt(new Date())//Yaranma tarixi
+                .setExpiration(new Date(System.currentTimeMillis()+expireTime))//bitme muddeti
+                .signWith(getSignInKey(),SignatureAlgorithm.HS256)//imzalama
+                .compact();//Stringe cevirmek
     }
 
     public Boolean isAccessTokenValid(String token) {
@@ -43,18 +43,15 @@ public class JwtService {
 
     public Role extractRole(String token) {
         Claims claims = extractAllClaims(token);
-        String role = claims.get("roles", String.class);//USER
+        String role = claims.get("roles", String.class);
         return Role.valueOf(role);
     }
-
-    //helper functions
-
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
     private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);//bitme tarixi
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

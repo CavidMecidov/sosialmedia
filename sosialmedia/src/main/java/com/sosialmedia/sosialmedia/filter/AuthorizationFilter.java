@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 @Component
+
 public class AuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -28,15 +29,13 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
-        // BURANI ƏLAVƏ ET
         String path = request.getServletPath();
         if (path.equals("/api/v1/auth/sign-up") || path.equals("/api/v1/auth/login")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String authorizationHeader = request.getHeader("Authorization");
+        String  authorizationHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
 
