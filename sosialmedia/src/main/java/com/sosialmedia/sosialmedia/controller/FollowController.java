@@ -5,6 +5,7 @@ import com.sosialmedia.sosialmedia.entity.User;
 import com.sosialmedia.sosialmedia.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
@@ -13,17 +14,17 @@ import java.util.List;
 public class FollowController {
     private final FollowService followService;
 
-    @PostMapping("/{followerId}/follow/{followingId}")
-    public ResponseEntity<String> followUser(@PathVariable Long followerId,
+    @PostMapping("/follow/{followingId}")
+    public ResponseEntity<String> followUser(@AuthenticationPrincipal User user,
                                              @PathVariable Long followingId) {
-        followService.followUser(followerId, followingId);
+        followService.followUser(user.getId(), followingId);
         return ResponseEntity.ok("Successfully followed the user");
 
     }
-    @DeleteMapping("/{followerId}/unfollow/{followingId}")
-    public ResponseEntity<String> unFollow(@PathVariable Long followerId,
+    @DeleteMapping("//unfollow/{followingId}")
+    public ResponseEntity<String> unFollow(@AuthenticationPrincipal User user,
                                            @PathVariable Long followingId){
-        followService.unFollowUser(followerId,followingId);
+        followService.unFollowUser(user.getId(), followingId);
         return ResponseEntity.ok("Successfully unfollow the user ");
     }
     @GetMapping("/{userid}/follower")
