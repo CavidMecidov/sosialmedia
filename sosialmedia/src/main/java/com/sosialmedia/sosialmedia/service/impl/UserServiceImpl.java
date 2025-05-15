@@ -2,6 +2,7 @@ package com.sosialmedia.sosialmedia.service.impl;
 
 import com.sosialmedia.sosialmedia.dto.UserResponse;
 import com.sosialmedia.sosialmedia.entity.User;
+import com.sosialmedia.sosialmedia.mapper.UserMapper;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
 import com.sosialmedia.sosialmedia.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public User update(Long id, User userup) {
@@ -36,16 +38,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
 
-        userup.setName(userup.getName());
-        userup.setSurname(userup.getSurname());
-        userup.setGender(userup.getGender());
-        userup.setBirthdate(userup.getBirthdate());
-        userup.setBio(userup.getBio());
-        userup.setEmail(userup.getEmail());
-        userup.setPhoneNumber(userup.getPhoneNumber());
-        userup.setUsername(userup.getUsername());
-        userup.setPassword(userup.getPassword());
-        userup.setModifiedDate(userup.getModifiedDate());
+        existUser.setName(userup.getName());
+        existUser.setSurname(userup.getSurname());
+        existUser.setGender(userup.getGender());
+        existUser.setBirthdate(userup.getBirthdate());
+        existUser.setBio(userup.getBio());
+        existUser.setEmail(userup.getEmail());
+        existUser.setPhoneNumber(userup.getPhoneNumber());
+        existUser.setUsername(userup.getUsername());
+        existUser.setPassword(userup.getPassword());
+        existUser.setModifiedDate(userup.getModifiedDate());
 
         return userRepository.save(existUser);
 
@@ -53,10 +55,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        if(!user.getUserid().equals(id)){
+        if (!user.getUserid().equals(id)) {
             throw new RuntimeException("You can only  delete own accaunt");
         }
         userRepository.deleteById(id);
@@ -87,10 +89,11 @@ public class UserServiceImpl implements UserService {
 
         return userPage.stream()
                 .map(user -> new UserResponse(
-                        user.getUserid(), // Bu metodu "getUserid()" istifadə edərək götürün
+                        user.getUserid(),
                         user.getUsername(),
                         user.getName(),
                         user.getSurname(),
+                        user.getBirthdate(),
                         user.getEmail(),
                         user.getGender(),
                         user.getBio(),
@@ -104,5 +107,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
+    @Override
+    public UserResponse getMyInformation() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found " + username));
+        return userMapper.toResponse(user);
+    }
 }

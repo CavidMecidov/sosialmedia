@@ -13,6 +13,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
+import  java.util.List;
 
 
 @Service
@@ -24,13 +25,14 @@ public class JwtService {
     private String secretKey;
 
     public String generateAccessToken(User user) {
-        return Jwts.builder()
-                .setClaims(Map.of("roles",user.getRole())) //Rol elave etmek
-                .setSubject(user.getUsername())//Token sahibi
+        String token = Jwts.builder()
+                .setClaims(Map.of("roles", "ROLE_" + user.getRole().name())).setSubject(user.getUsername())//Token sahibi
                 .setIssuedAt(new Date())//Yaranma tarixi
-                .setExpiration(new Date(System.currentTimeMillis()+expireTime))//bitme muddeti
-                .signWith(getSignInKey(),SignatureAlgorithm.HS256)//imzalama
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))//bitme muddeti
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)//imzalama
                 .compact();//Stringe cevirmek
+        System.out.println("Generated JWT Token: " + token);
+        return token;
     }
 
     public Boolean isAccessTokenValid(String token) {

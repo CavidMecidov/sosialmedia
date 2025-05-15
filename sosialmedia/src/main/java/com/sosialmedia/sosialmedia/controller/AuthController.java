@@ -3,7 +3,7 @@ package com.sosialmedia.sosialmedia.controller;
 import com.sosialmedia.sosialmedia.dto.LoginResponse;
 import com.sosialmedia.sosialmedia.dto.UserLoginRequest;
 import com.sosialmedia.sosialmedia.dto.UserRegisterRequest;
-import com.sosialmedia.sosialmedia.service.AuthService;
+import com.sosialmedia.sosialmedia.config.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

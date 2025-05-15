@@ -1,7 +1,5 @@
-package com.sosialmedia.sosialmedia.service;
+package com.sosialmedia.sosialmedia.config;
 
-import com.sosialmedia.sosialmedia.config.JwtService;
-import com.sosialmedia.sosialmedia.config.PasswordEncoderConfig;
 import com.sosialmedia.sosialmedia.dto.LoginResponse;
 import com.sosialmedia.sosialmedia.dto.UserLoginRequest;
 import com.sosialmedia.sosialmedia.dto.UserRegisterRequest;
@@ -13,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,17 +25,23 @@ public class AuthService {
     public LoginResponse register(UserRegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail()) ||
                 userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Email və ya username artıq mövcuddur.");
+            throw new RuntimeException("Email or username already exist.");
         }
 
         User user = User.builder()
                 .name(request.getName())
                 .surname(request.getSurname())
                 .username(request.getUsername())
+                .gender(request.getGender())
+                .birthdate(request.getBirthdate())
+                .phoneNumber(request.getPhoneNumber())
+                .bio(request.getBio())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .profilePictureUrl(request.getProfilePictureUrl())
                 .role(Role.USER)
                 .enabled(true)
+                .isActive(true)
                 .locked(false)
                 .build();
 
@@ -56,14 +59,18 @@ public class AuthService {
                             request.getPassword()
                     )
             );
-            SecurityContextHolder.getContext().setAuthentication(authentication); // Authentication əlavə edin
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             throw new RuntimeException("Login uğursuz oldu: " + e.getMessage());
         }
 
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(!user.isActive()){
+            throw  new RuntimeException("User deaktived");
+        }
 
         String jwtToken = jwtService.generateAccessToken(user);
         return new LoginResponse(jwtToken);

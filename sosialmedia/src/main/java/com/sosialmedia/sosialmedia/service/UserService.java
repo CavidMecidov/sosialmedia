@@ -19,5 +19,6 @@ public interface UserService {
 
     List<UserResponse> searchUsers(String name, String surname, String username, int page, int size);
 
+    UserResponse getMyInformation();
 
 }

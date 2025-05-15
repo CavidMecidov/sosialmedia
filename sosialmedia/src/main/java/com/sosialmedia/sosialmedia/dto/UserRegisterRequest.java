@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sosialmedia.sosialmedia.enums.Gender;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 public class UserRegisterRequest {
@@ -19,6 +18,8 @@ public class UserRegisterRequest {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull()
+    private LocalDate birthdate;
     private String bio;
     @NotBlank(message = "Email can not be blank")
     @Email(message = "Invalid email format")
