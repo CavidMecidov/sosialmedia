@@ -56,6 +56,7 @@ public class FollowServiceImpl implements FollowService {
                 .orElseThrow(() -> new RuntimeException("You are not following this user"));
 
                followRepository.delete(follow);
+        System.out.println("Istifadeci ugurla silindi: " + follow);
     }
 
     @Override
