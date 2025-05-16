@@ -1,5 +1,6 @@
 package com.sosialmedia.sosialmedia.service;
 
+import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 
 import java.util.List;
@@ -17,5 +18,7 @@ public interface PostService {
     List<Post> getByUserId(Long userid);
 
     Optional<Post> getPostById(Long id);
+    List<PostResponse>getAllDiscoverPosts();
+    List<Post>getSharePosts(Long userid);
 
 }

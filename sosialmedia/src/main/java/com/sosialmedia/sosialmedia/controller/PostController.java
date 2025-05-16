@@ -1,8 +1,11 @@
 package com.sosialmedia.sosialmedia.controller;
 
+import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 import com.sosialmedia.sosialmedia.service.PostService;
+import jakarta.validation.OverridesAttribute;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.ConvertGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +30,7 @@ public class PostController {
         return ResponseEntity.ok(updatePost);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
@@ -43,5 +46,14 @@ public class PostController {
     @GetMapping("/by-userid")
     public ResponseEntity<List<Post>> getByUserId(@PathVariable Long userid) {
         return ResponseEntity.ok(postService.getByUserId(userid));
+    }
+    @GetMapping("/discover")
+    public ResponseEntity<List<PostResponse>>getDiscoverPosts(){
+        return ResponseEntity.ok(postService.getAllDiscoverPosts());
+    }
+    @GetMapping("/Shares")
+    public ResponseEntity<List<Post>>getShare(@RequestParam Long userid){
+        List<Post> sharePost =postService.getSharePosts(userid);
+        return ResponseEntity.ok(sharePost);
     }
 }

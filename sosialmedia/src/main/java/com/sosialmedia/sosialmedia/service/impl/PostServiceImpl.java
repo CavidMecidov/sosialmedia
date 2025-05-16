@@ -1,14 +1,20 @@
 package com.sosialmedia.sosialmedia.service.impl;
 
+import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 import com.sosialmedia.sosialmedia.entity.User;
+import com.sosialmedia.sosialmedia.mapper.PostMapper;
+import com.sosialmedia.sosialmedia.repository.FollowRepository;
 import com.sosialmedia.sosialmedia.repository.PostRepository;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
 import com.sosialmedia.sosialmedia.service.PostService;
+import jakarta.validation.OverridesAttribute;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +23,8 @@ import java.util.Optional;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
+   // private final PostMapper postMapper;
 
     @Override
     public Post create(Post post) {
@@ -38,7 +46,7 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("You can only update your own post");
         }
 
-        existPost.setTittle(update.getTittle());
+        existPost.setTitle(update.getTitle());
         existPost.setContent(update.getContent());
         existPost.setImageUrl(update.getImageUrl());
         existPost.setVideoUrl(update.getVideoUrl());
@@ -72,5 +80,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public Optional<Post> getPostById(Long id) {
         return postRepository.findById(id);
+    }
+
+    @Override
+    public List<PostResponse> getAllDiscoverPosts() {
+          List<Post>posts =postRepository.findAllByOrderByCreatedDateDesc();
+          return posts.stream()
+                  .map(PostMapper::toResponse)
+                  .toList();
+    }
+
+    @Override
+    public List<Post> getSharePosts(Long userid) {
+        List<Long> followUserId = followRepository.findFollowedUserIds(userid);
+        if(followUserId.isEmpty()){
+            return Collections.emptyList();
+        }
+        return  postRepository.findByUserIdInOrderByCreatedDateDesc(followUserId);
     }
 }

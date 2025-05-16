@@ -1,5 +1,6 @@
 package com.sosialmedia.sosialmedia.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sosialmedia.sosialmedia.enums.Gender;
 import com.sosialmedia.sosialmedia.enums.Role;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements UserDetails {
     @Id
     @Column(name = "userid")
