@@ -3,7 +3,9 @@ package com.sosialmedia.sosialmedia.mapper;
 import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.dto.UserSummaryResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PostMapper {
     public static PostResponse toResponse(Post post){
         return PostResponse.builder()

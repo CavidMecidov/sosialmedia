@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 //@Builder
 @Data
-@Table(name = "post")
+@Table(name = "posts")
 @Entity
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -30,7 +30,7 @@ public class Post {
     private Integer viewCount = 0;
     @JoinColumn(name = "user_id",nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private User user;//author
 
 
     @CreatedDate
@@ -38,6 +38,7 @@ public class Post {
     private LocalDateTime createdDate;
 
     @LastModifiedDate
+    @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
 }

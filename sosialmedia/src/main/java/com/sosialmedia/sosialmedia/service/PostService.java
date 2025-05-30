@@ -1,6 +1,7 @@
 package com.sosialmedia.sosialmedia.service;
 
 import com.sosialmedia.sosialmedia.dto.PostResponse;
+import com.sosialmedia.sosialmedia.dto.UserSummaryResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 
 import java.util.List;
@@ -13,12 +14,14 @@ public interface PostService {
 
     void delete(Long id, Long userid);
 
-    List<Post> getAllPosts();
+    List<PostResponse> getAllPosts();
 
     List<Post> getByUserId(Long userid);
 
     Optional<Post> getPostById(Long id);
-    List<PostResponse>getAllDiscoverPosts();
-    List<Post>getSharePosts(Long userid);
+
+    List<PostResponse> getAllDiscoverPosts();
+
+    List<Post> getSharePosts(Long userid);
 
 }

@@ -24,14 +24,12 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/my-information")
     public ResponseEntity<UserResponse> getMyInformation(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authorities: " + auth.getAuthorities());
         UserResponse userResponses =  userService.getMyInformation();
         return  new ResponseEntity<>(userResponses,HttpStatus.OK);
     }
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUser() {
-        List<User> users = userService.getAllUsers();
+    @GetMapping("/allUsers")
+    public ResponseEntity<List<UserResponse>> getAllUser() {
+        List<UserResponse> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
