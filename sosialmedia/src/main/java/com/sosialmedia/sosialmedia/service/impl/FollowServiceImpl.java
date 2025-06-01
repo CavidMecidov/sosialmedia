@@ -3,6 +3,8 @@ package com.sosialmedia.sosialmedia.service.impl;
 import com.sosialmedia.sosialmedia.dto.FollowResponse;
 import com.sosialmedia.sosialmedia.entity.Follow;
 import com.sosialmedia.sosialmedia.entity.User;
+import com.sosialmedia.sosialmedia.exception.ConflictException;
+import com.sosialmedia.sosialmedia.exception.NotFoundException;
 import com.sosialmedia.sosialmedia.mapper.FollowMapper;
 import com.sosialmedia.sosialmedia.repository.FollowRepository;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
@@ -26,16 +28,16 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public void followUser(Long followerId, Long followingId) {
         if(followerId.equals(followingId)){
-            throw new RuntimeException("You can't follow yourself");
+            throw new ConflictException("You can't follow yourself");
         }
         User follower =  userRepository.findById(followerId)
-                .orElseThrow(() -> new RuntimeException("Follower user not found"));
+                .orElseThrow(() -> new NotFoundException("Follower user not found"));
         User following = userRepository.findById(followingId)
-                .orElseThrow(() -> new RuntimeException("Following user not found"));
+                .orElseThrow(() -> new NotFoundException("Following user not found"));
 
-        Optional<Follow> existFollow= followRepository.findByFollowerAndFollowing(follower,following);
+        Optional<Follow> existFollow= followRepository.findByFollowerUseridAndFollowingUserid(followerId,followingId);
         if(existFollow.isPresent()){
-            throw  new RuntimeException("You are already following this user");
+            throw  new ConflictException("You are already following this user");
         }
         Follow follow =  new Follow();
         follow.setFollower(follower);
@@ -56,13 +58,13 @@ public class FollowServiceImpl implements FollowService {
                 .orElseThrow(() -> new RuntimeException("You are not following this user"));
 
                followRepository.delete(follow);
-        System.out.println("Istifadeci ugurla silindi: " + follow);
+        System.out.println("User deleted successful : " + follow);
     }
 
     @Override
     public List<FollowResponse> getFollowers(Long userid) {
         User user = userRepository.findById(userid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         List<Follow> followers = followRepository.findByFollowing(user);
         return followers.stream()
                 .map(follow -> followMapper.toFollowResponse(follow.getFollower()) )
@@ -72,7 +74,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public List<FollowResponse> getFollowing(Long userid) {
      User user =  userRepository.findById(userid)
-             .orElseThrow(() -> new RuntimeException("User not found"));
+             .orElseThrow(() -> new NotFoundException("User not found"));
 
      List<Follow> following =  followRepository.findByFollower(user);
         return following.stream()

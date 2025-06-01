@@ -4,6 +4,7 @@ import com.sosialmedia.sosialmedia.entity.Post;
 import com.sosialmedia.sosialmedia.entity.Reaction;
 import com.sosialmedia.sosialmedia.entity.User;
 import com.sosialmedia.sosialmedia.enums.ReactionType;
+import com.sosialmedia.sosialmedia.exception.NotFoundException;
 import com.sosialmedia.sosialmedia.repository.PostRepository;
 import com.sosialmedia.sosialmedia.repository.ReactionRepository;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
@@ -29,9 +30,9 @@ public class ReactionServiceImpl implements ReactionService {
     public void likePost(Long postid) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();//username
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         Post post = postRepository.findById(postid)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
         Optional<Reaction> existReaction = postReactionRepository.findByUserAndPost(user, post);
         if (existReaction.isPresent()) {
             Reaction reaction = existReaction.get();
@@ -50,9 +51,9 @@ public class ReactionServiceImpl implements ReactionService {
     public void dislikePost(Long postid) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();//username
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         Post post = postRepository.findById(postid)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
         Optional<Reaction> existReaction = postReactionRepository.findByUserAndPost(user, post);
         if (existReaction.isPresent()) {
             Reaction reaction = existReaction.get();
@@ -70,7 +71,7 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public Map<String, Long> getReactions(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
         Long like = postReactionRepository.countByPostAndReactionType(post,ReactionType.LIKE);
         Long dislike = postReactionRepository.countByPostAndReactionType(post,ReactionType.DISLIKE);
         Map<String,Long> map =  new HashMap<>();

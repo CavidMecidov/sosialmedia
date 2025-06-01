@@ -1,5 +1,7 @@
 package com.sosialmedia.sosialmedia.controller;
 
+import com.sosialmedia.sosialmedia.dto.BaseResponse;
+import com.sosialmedia.sosialmedia.dto.FollowResponse;
 import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 import com.sosialmedia.sosialmedia.service.PostService;
@@ -19,41 +21,58 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<Post> created(@RequestBody @Valid Post post) {
+    public BaseResponse<Post> created(@RequestBody @Valid Post post) {
         Post created = postService.create(post);
-        return ResponseEntity.ok(created);
+        BaseResponse<Post> baseResponse = new BaseResponse<>();
+        baseResponse.setData(created);
+        baseResponse.setMessage("Post created successfully");
+        baseResponse.setSuccess(true);
+        return baseResponse;
     }
 
     @PutMapping
-    public ResponseEntity<Post> update(@PathVariable Long id, @RequestBody Post update) {
+    public BaseResponse<Post> update(@PathVariable Long id, @RequestBody Post update) {
         Post updatePost = postService.update(id, update);
-        return ResponseEntity.ok(updatePost);
+        BaseResponse<Post> baseResponse = new BaseResponse<>();
+        baseResponse.setData(updatePost);
+        baseResponse.setMessage("Post updated successfully");
+        baseResponse.setSuccess(true);
+        return baseResponse;
+
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
+    public BaseResponse<List<PostResponse>> getAllPosts() {
         List<PostResponse> posts = postService.getAllPosts();
-        return ResponseEntity.ok(posts);
+        BaseResponse<List<PostResponse>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(posts);
+        baseResponse.setMessage("All posts called successfully");
+        baseResponse.setSuccess(true);
+        return baseResponse;
+
+
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@RequestParam Long id) {
+    public BaseResponse<Post> getPostById(@RequestParam Long id) {
         return postService.getPostById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(post -> new BaseResponse<>(post, "Post found", true))
+                .orElseGet(() -> new BaseResponse<>(null, "Post not found", false));
     }
 
     @GetMapping("/by-userid")
-    public ResponseEntity<List<Post>> getByUserId(@PathVariable Long userid) {
-        return ResponseEntity.ok(postService.getByUserId(userid));
+    public BaseResponse<List<Post>> getByUserId(@PathVariable Long userid) {
+        List<Post> posts = postService.getByUserId(userid);
+        return new BaseResponse<>(posts, "Posts by user fetched successfully", true);
     }
     @GetMapping("/discover")
-    public ResponseEntity<List<PostResponse>>getDiscoverPosts(){
-        return ResponseEntity.ok(postService.getAllDiscoverPosts());
+    public BaseResponse<List<PostResponse>>getDiscoverPosts(){
+        List<PostResponse> posts = postService.getAllDiscoverPosts();
+        return new BaseResponse<>(posts, "Discover posts fetched successfully", true);
     }
     @GetMapping("/Shares")
-    public ResponseEntity<List<Post>>getShare(@RequestParam Long userid){
-        List<Post> sharePost =postService.getSharePosts(userid);
-        return ResponseEntity.ok(sharePost);
+    public BaseResponse<List<Post>>getShare(@RequestParam Long userid){
+        List<Post> sharePost = postService.getSharePosts(userid);
+        return new BaseResponse<>(sharePost, "Shared posts fetched successfully", true);
     }
 }

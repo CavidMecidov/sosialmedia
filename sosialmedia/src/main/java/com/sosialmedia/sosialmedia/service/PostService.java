@@ -4,6 +4,7 @@ import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.dto.UserSummaryResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ public interface PostService {
 
     Post update(Long id, Post update);
 
-    void delete(Long id, Long userid);
+    void delete(Long id, Long userid) throws AccessDeniedException;
 
     List<PostResponse> getAllPosts();
 

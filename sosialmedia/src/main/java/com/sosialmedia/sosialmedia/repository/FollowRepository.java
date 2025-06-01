@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface FollowRepository  extends JpaRepository<Follow,Long>{
     Optional<Follow> findByFollowerAndFollowing(User follower, User following);
+    Optional<Follow>findByFollowerUseridAndFollowingUserid(Long userid,Long followingUserId);
     List<Follow> findByFollower(User user);
     List<Follow> findByFollowing(User user);
     @Query("SELECT f.following.id FROM Follow f WHERE f.follower.id = :userId")

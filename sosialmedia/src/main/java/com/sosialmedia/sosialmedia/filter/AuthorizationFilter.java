@@ -1,6 +1,6 @@
 package com.sosialmedia.sosialmedia.filter;
 
-import com.sosialmedia.sosialmedia.config.JwtService;
+import com.sosialmedia.sosialmedia.service.impl.JwtService;
 import com.sosialmedia.sosialmedia.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

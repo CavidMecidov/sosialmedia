@@ -1,13 +1,16 @@
-package com.sosialmedia.sosialmedia.config;
+package com.sosialmedia.sosialmedia.service.impl;
 
 import com.sosialmedia.sosialmedia.dto.LoginResponse;
 import com.sosialmedia.sosialmedia.dto.UserLoginRequest;
 import com.sosialmedia.sosialmedia.dto.UserRegisterRequest;
 import com.sosialmedia.sosialmedia.entity.User;
 import com.sosialmedia.sosialmedia.enums.Role;
+import com.sosialmedia.sosialmedia.exception.ConflictException;
+import com.sosialmedia.sosialmedia.exception.NotFoundException;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +28,7 @@ public class AuthService {
     public LoginResponse register(UserRegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail()) ||
                 userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Email or username already exist.");
+            throw new ConflictException("Email or username already exist.");
         }
 
         User user = User.builder()
@@ -61,15 +64,15 @@ public class AuthService {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            throw new RuntimeException("Login uğursuz oldu: " + e.getMessage());
+            throw new RuntimeException("Login failed:" + e.getMessage());
         }
 
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         if(!user.isActive()){
-            throw  new RuntimeException("User deaktived");
+            throw new BadCredentialsException("User deactivated");
         }
 
         String jwtToken = jwtService.generateAccessToken(user);

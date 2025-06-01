@@ -1,10 +1,10 @@
 package com.sosialmedia.sosialmedia.controller;
 
+import com.sosialmedia.sosialmedia.dto.BaseResponse;
 import com.sosialmedia.sosialmedia.dto.FollowResponse;
 import com.sosialmedia.sosialmedia.entity.User;
 import com.sosialmedia.sosialmedia.service.FollowService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,30 +17,46 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/follow/{followingId}")
-    public ResponseEntity<String> followUser(@AuthenticationPrincipal User user,
-                                             @PathVariable Long followingId) {
+    public BaseResponse<String> followUser(@AuthenticationPrincipal User user,
+                                           @PathVariable Long followingId) {
         followService.followUser(user.getId(), followingId);
-        return ResponseEntity.ok("Successfully followed the user");
+        BaseResponse<String> baseResponse = new BaseResponse<>();
+        baseResponse.setData("Followed user with id: " + followingId);
+        baseResponse.setMessage("Follow successful");
+        baseResponse.setSuccess(true);
+        return baseResponse;
 
     }
 
     @DeleteMapping("/unfollow/{followingId}")
-    public ResponseEntity<String> unFollow(@AuthenticationPrincipal User user,
+    public BaseResponse<String> unFollow(@AuthenticationPrincipal User user,
                                            @PathVariable Long followingId) {
         followService.unFollowUser(user.getId(), followingId);
-        return ResponseEntity.ok("Successfully unfollow the user ");
+        BaseResponse<String> baseResponse = new BaseResponse<>();
+        baseResponse.setData("Following user with id: " + followingId);
+        baseResponse.setMessage("Following successful");
+        baseResponse.setSuccess(true);
+        return baseResponse;
     }
 
     @GetMapping("/{userid}/follower")
-    public ResponseEntity<List<FollowResponse>> getFollowers(@PathVariable Long userid) {
+    public BaseResponse<List<FollowResponse>> getFollowers(@PathVariable Long userid) {
         List<FollowResponse> followers = followService.getFollowers(userid);
-        return ResponseEntity.ok(followers);
+        BaseResponse<List<FollowResponse>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(followers);
+        baseResponse.setMessage("Followers brought successfully");
+        baseResponse.setSuccess(true);
+        return baseResponse;
     }
 
     @GetMapping("/{userid}/following")
-    public ResponseEntity<List<FollowResponse>> getFollowing(@PathVariable Long userid) {
+    public BaseResponse<List<FollowResponse>> getFollowing(@PathVariable Long userid) {
         List<FollowResponse> following = followService.getFollowing(userid);
-        return ResponseEntity.ok(following);
+        BaseResponse<List<FollowResponse>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(following);
+        baseResponse.setMessage("Following list brought successfully");
+        baseResponse.setSuccess(true);
+        return baseResponse;
     }
 
 

@@ -1,15 +1,11 @@
 package com.sosialmedia.sosialmedia.controller;
 
+import com.sosialmedia.sosialmedia.dto.BaseResponse;
 import com.sosialmedia.sosialmedia.dto.UserResponse;
 import com.sosialmedia.sosialmedia.entity.User;
 import com.sosialmedia.sosialmedia.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,32 +19,51 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/my-information")
-    public ResponseEntity<UserResponse> getMyInformation(){
-        UserResponse userResponses =  userService.getMyInformation();
-        return  new ResponseEntity<>(userResponses,HttpStatus.OK);
+    public BaseResponse<UserResponse> getMyInformation() {
+        var userResponses = userService.getMyInformation();
+        BaseResponse<UserResponse> baseResponse = new BaseResponse<>();
+        baseResponse.setSuccess(true);
+        baseResponse.setData(userResponses);
+        baseResponse.setMessage("My information: " + userResponses);
+        return baseResponse;
     }
     @GetMapping("/allUsers")
-    public ResponseEntity<List<UserResponse>> getAllUser() {
+    public BaseResponse<List<UserResponse>> getAllUser() {
         List<UserResponse> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        BaseResponse<List<UserResponse>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(users);
+        baseResponse.setSuccess(true);
+        baseResponse.setMessage("All users: " + users);
+        return baseResponse;
     }
 
     @PutMapping("/{id}")//
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
-        User userup = userService.update(id, user);
-        return new ResponseEntity<>(userup, HttpStatus.OK);
+    public BaseResponse<User> update(@PathVariable Long id, @RequestBody User user) {
+        var userUp = userService.update(id, user);
+        BaseResponse<User> baseResponse = new BaseResponse<>();
+        baseResponse.setData(userUp);
+        baseResponse.setSuccess(true);
+        baseResponse.setMessage("User updated" + userUp);
+        return baseResponse;
     }
      @PreAuthorize("hasRole(ADMIN)")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        userService.delete(id);
-        return new ResponseEntity<>("User is delete with succesfull", HttpStatus.NO_CONTENT);
-    }
-
+     public BaseResponse<String> delete(@PathVariable Long id) {
+         userService.delete(id);
+         BaseResponse<String> baseResponse = new BaseResponse<>();
+         baseResponse.setSuccess(true);
+         baseResponse.setMessage("User delete successful");
+         baseResponse.setData("Deleted user with id: " + id);
+         return baseResponse;
+     }
     @GetMapping("/search")
-    public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "surname", required = false, defaultValue = "") String surname, @RequestParam(value = "username", required = false, defaultValue = "") String username, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public BaseResponse<List<UserResponse>> searchUsers(@RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "surname", required = false, defaultValue = "") String surname, @RequestParam(value = "username", required = false, defaultValue = "") String username, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         List<UserResponse> users = userService.searchUsers(name, surname, username, page, size);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        BaseResponse<List<UserResponse>> baseResponse = new BaseResponse<>();
+        baseResponse.setData(users);
+        baseResponse.setMessage("Searched users:" + users);
+        baseResponse.setSuccess(true);
+        return baseResponse;
     }
 }
 

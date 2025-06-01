@@ -3,6 +3,8 @@ package com.sosialmedia.sosialmedia.service.impl;
 import com.sosialmedia.sosialmedia.dto.PostResponse;
 import com.sosialmedia.sosialmedia.entity.Post;
 import com.sosialmedia.sosialmedia.entity.User;
+import com.sosialmedia.sosialmedia.exception.ConflictException;
+import com.sosialmedia.sosialmedia.exception.NotFoundException;
 import com.sosialmedia.sosialmedia.mapper.PostMapper;
 import com.sosialmedia.sosialmedia.repository.FollowRepository;
 import com.sosialmedia.sosialmedia.repository.PostRepository;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +31,7 @@ public class PostServiceImpl implements PostService {
     public Post create(Post post) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         post.setUser(user);
         return postRepository.save(post);
 
@@ -38,13 +41,13 @@ public class PostServiceImpl implements PostService {
     public Post update(Long id, Post update) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();//username
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         Post existPost = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NotFoundException("Post not found"));
 
         if (!existPost.getUser().getUserid().equals(user.getUserid())) {
-            throw new RuntimeException("You can only update your own post");
+            throw new ConflictException("You can only update your own post");
         }
 
         existPost.setTitle(update.getTitle());
@@ -56,15 +59,15 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public void delete(Long id, Long userid) {
+    public void delete(Long id, Long userid) throws AccessDeniedException {
         User user = userRepository.findById(userid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         Post existPost = postRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Post not found"));
+                orElseThrow(() -> new NotFoundException("Post not found"));
 
         if (!existPost.getUser().getUserid().equals(userid)) {
-            throw new RuntimeException("You can delete only own posts");
+            throw new AccessDeniedException("You can delete only own posts");
         }
         postRepository.delete(existPost);
 

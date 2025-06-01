@@ -1,4 +1,4 @@
-package com.sosialmedia.sosialmedia.config;
+package com.sosialmedia.sosialmedia.service.impl;
 import com.sosialmedia.sosialmedia.entity.User;
 import com.sosialmedia.sosialmedia.enums.Role;
 import io.jsonwebtoken.Claims;
@@ -13,7 +13,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
-import  java.util.List;
 
 
 @Service

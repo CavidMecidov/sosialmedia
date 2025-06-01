@@ -1,6 +1,7 @@
 package com.sosialmedia.sosialmedia.service.impl;
 
 import com.sosialmedia.sosialmedia.entity.User;
+import com.sosialmedia.sosialmedia.exception.NotFoundException;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
 import com.sosialmedia.sosialmedia.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
         User user = userService.getByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         return user;
     }
