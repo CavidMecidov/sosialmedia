@@ -46,10 +46,10 @@ public class SecurityConfig {
                                 "/api/v1/posts",
                                 "/api/v1/post_reactions/*/reactions",
                                 "/api/v1/users/allUsers",
+                                "api/v1/users/*/search",
                                 "/api/v1/user_follows/*/follower",
                                 "/api/v1/user_follows/*/following"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)

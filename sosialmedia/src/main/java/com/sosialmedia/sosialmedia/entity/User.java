@@ -44,7 +44,6 @@ public class User implements UserDetails {
     private String phoneNumber;
     private String username;
     private String password;
-    private String profilePictureUrl;
     @CreatedDate
     @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;

@@ -18,7 +18,6 @@ public class UserMapper {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .birthdate(user.getBirthdate())
-                .profilePictureUrl(user.getProfilePictureUrl())
                 .createdDate(user.getCreatedDate())
                 .modifiedDate(user.getModifiedDate())
                 .build();

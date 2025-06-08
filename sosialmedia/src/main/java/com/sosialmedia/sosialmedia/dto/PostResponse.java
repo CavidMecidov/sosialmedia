@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 public class PostResponse {
     private Long id;
     private String content;
-    private String imageUrl;
-    private String videoUrl;
     private Integer viewCount;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;

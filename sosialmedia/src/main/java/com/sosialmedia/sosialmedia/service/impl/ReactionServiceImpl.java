@@ -36,9 +36,10 @@ public class ReactionServiceImpl implements ReactionService {
         Optional<Reaction> existReaction = postReactionRepository.findByUserAndPost(user, post);
         if (existReaction.isPresent()) {
             Reaction reaction = existReaction.get();
-            if (reaction.getReactionType() == ReactionType.LIKE)
-                return;
-            postReactionRepository.delete(reaction);
+            if (reaction.getReactionType() == ReactionType.LIKE) {
+                postReactionRepository.delete(reaction);
+            }
+            return;
         }
         Reaction upReaction = new Reaction();
         upReaction.setUser(user);
@@ -69,7 +70,7 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public Map<String, Long> getReactions(Long postId) {
+    public Map<String,Long> getReactions(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("Post not found"));
         Long like = postReactionRepository.countByPostAndReactionType(post,ReactionType.LIKE);

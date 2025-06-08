@@ -24,7 +24,6 @@ public class UserResponse {
     private Gender gender;
     private String bio;
     private String phoneNumber;
-    private String profilePictureUrl;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdDate;

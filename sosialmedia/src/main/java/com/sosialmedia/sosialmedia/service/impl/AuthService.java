@@ -41,7 +41,6 @@ public class AuthService {
                 .bio(request.getBio())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .profilePictureUrl(request.getProfilePictureUrl())
                 .role(Role.USER)
                 .enabled(true)
                 .isActive(true)

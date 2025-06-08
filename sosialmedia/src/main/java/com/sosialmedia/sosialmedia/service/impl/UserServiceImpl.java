@@ -2,6 +2,7 @@ package com.sosialmedia.sosialmedia.service.impl;
 
 import com.sosialmedia.sosialmedia.dto.UserResponse;
 import com.sosialmedia.sosialmedia.entity.User;
+import com.sosialmedia.sosialmedia.exception.NotFoundException;
 import com.sosialmedia.sosialmedia.mapper.UserMapper;
 import com.sosialmedia.sosialmedia.repository.UserRepository;
 import com.sosialmedia.sosialmedia.service.UserService;
@@ -28,7 +29,7 @@ public class UserServiceImpl implements UserService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Username not found"));
+                .orElseThrow(() -> new NotFoundException("Username not found"));
 
         if (!currentUser.getUserid().equals(id)) {
             throw new RuntimeException("You can only update your own account");
@@ -102,7 +103,6 @@ public class UserServiceImpl implements UserService {
                         user.getGender(),
                         user.getBio(),
                         user.getPhoneNumber(),
-                        user.getProfilePictureUrl(),
                         user.getCreatedDate(),
                         user.getModifiedDate()
                 ))

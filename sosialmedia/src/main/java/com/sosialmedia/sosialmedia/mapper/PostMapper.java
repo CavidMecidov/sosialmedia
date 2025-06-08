@@ -11,8 +11,6 @@ public class PostMapper {
         return PostResponse.builder()
                 .id(post.getId())
                 .content(post.getContent())
-                .imageUrl(post.getImageUrl())
-                .videoUrl(post.getVideoUrl())
                 .viewCount(post.getViewCount())
                 .createdDate(post.getCreatedDate())
                 .modifiedDate(post.getModifiedDate())
@@ -22,7 +20,6 @@ public class PostMapper {
                                 .name(post.getUser().getName())
                                 .surname(post.getUser().getSurname())
                                 .username(post.getUser().getUsername())
-                                .profilePictureUrl(post.getUser().getProfilePictureUrl())
                                 .build()
                 )
                 .build();

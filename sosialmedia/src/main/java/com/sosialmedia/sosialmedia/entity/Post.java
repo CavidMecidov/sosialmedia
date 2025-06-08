@@ -22,11 +22,8 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Getter
     private String title;
     private String content;
-    private String imageUrl;
-    private String videoUrl;
     private Integer viewCount = 0;
     @JoinColumn(name = "user_id",nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
