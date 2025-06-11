@@ -48,7 +48,9 @@ public class SecurityConfig {
                                 "/api/v1/users/allUsers",
                                 "api/v1/users/*/search",
                                 "/api/v1/user_follows/*/follower",
-                                "/api/v1/user_follows/*/following"
+                                "/api/v1/user_follows/*/following",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

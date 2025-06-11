@@ -30,7 +30,9 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getServletPath();
-        if (path.equals("/api/v1/auth/sign-up") || path.equals("/api/v1/auth/login")) {
+        if (path.equals("/api/v1/auth/sign-up") || path.equals("/api/v1/auth/login")
+                || path.equals("/swagger-ui/index.html")
+                || path.startsWith("/v3/api-docs")) {
             filterChain.doFilter(request, response);
             return;
         }
